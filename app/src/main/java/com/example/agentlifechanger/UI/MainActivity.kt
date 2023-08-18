@@ -1,7 +1,8 @@
-package com.example.agentlifechanger
+package com.example.agentlifechanger.UI
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.agentlifechanger.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
