@@ -5,9 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondary_m"
     android:orientation="vertical"
+    android:background="@color/secondary_m"
     tools:context=".UI.ActivityLogin">
+
 
     <RelativeLayout
         android:id="@+id/v1"
@@ -96,7 +97,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-
                     <CheckBox
                         android:id="@+id/cbRememberMe"
                         android:layout_width="0dp"
@@ -146,6 +146,23 @@
 
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_below="@+id/btnSignIn"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.266">
+
+
+
+        </LinearLayout>
 
     </RelativeLayout>
 

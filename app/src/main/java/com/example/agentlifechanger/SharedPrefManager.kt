@@ -3,8 +3,9 @@ package com.example.agentlifechanger
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.agentlifechanger.Models.ModelUser
-import com.google.firebase.firestore.auth.User
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 class SharedPrefManager(context : Context) {
 
@@ -14,7 +15,7 @@ class SharedPrefManager(context : Context) {
 
     fun saveUser(user: ModelUser) {
 
-        editor.putString("User", Gson().toJson(user))
+        editor.putString("com.example.agentlifechanger.Models.User", Gson().toJson(user))
         editor.commit()
     }
 
@@ -48,11 +49,6 @@ class SharedPrefManager(context : Context) {
         editor.putBoolean("isLoggedIn", isLoggedOut)
         editor.commit()
     }
-
-
-
-
-
 
 
 }
