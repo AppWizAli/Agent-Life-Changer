@@ -2,7 +2,8 @@ package com.example.agentlifechanger
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.agentlifechanger.Models.ModelUser
+import com.enfotrix.lifechanger.Models.User
+import com.example.agentlifechanger.Models.ModelFA
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -13,7 +14,7 @@ class SharedPrefManager(context : Context) {
 
     private val editor: SharedPreferences.Editor = sharedPref.edit()
 
-    fun saveUser(user: ModelUser) {
+    fun saveUser(user: ModelFA) {
 
         editor.putString("com.example.agentlifechanger.Models.User", Gson().toJson(user))
         editor.commit()
@@ -35,7 +36,7 @@ class SharedPrefManager(context : Context) {
         return isLoggedIn
     }
 
-    fun saveLoginAuth(user: ModelUser,token:String, loggedIn: Boolean){
+    fun saveLoginAuth(user: ModelFA,token:String, loggedIn: Boolean){
         saveUser(user)
         putToken(token)
         setLogin(loggedIn)
@@ -48,6 +49,18 @@ class SharedPrefManager(context : Context) {
     fun logOut(isLoggedOut: Boolean = false) {
         editor.putBoolean("isLoggedIn", isLoggedOut)
         editor.commit()
+    }
+
+    fun getUsersList(): List<User>{
+
+        val json = sharedPref.getString("ListUser", "") ?: ""
+        val type: Type = object : TypeToken<List<User?>?>() {}.getType()
+        //return Gson().fromJson(json, type)
+        return if (!json.isNullOrEmpty()) {
+            Gson().fromJson(json, type) ?: emptyList()
+        } else {
+            emptyList()
+        }
     }
 
 

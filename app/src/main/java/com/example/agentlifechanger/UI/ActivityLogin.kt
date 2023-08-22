@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.ColorSpace.Model
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -16,14 +17,13 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import com.example.agentlifechanger.Constants
-import com.example.agentlifechanger.Models.ModelUser
+import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.R
 import com.example.agentlifechanger.SharedPrefManager
 import com.example.agentlifechanger.Utils
 import com.example.agentlifechanger.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ActivityLogin : AppCompatActivity() {
@@ -39,7 +39,7 @@ class ActivityLogin : AppCompatActivity() {
     private lateinit var constants: Constants
     private lateinit var sharedPrefManager : SharedPrefManager
     private lateinit var dialog : Dialog
-    private lateinit var modelUser: ModelUser
+    private lateinit var modelFa: ModelFA
     private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +47,7 @@ class ActivityLogin : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mContext=this@ActivityLogin
+        modelFa = ModelFA("",",",",","","","","","","","","","","")
         utils = Utils(mContext)
         constants= Constants()
         sharedPrefManager = SharedPrefManager(mContext)
@@ -57,7 +58,7 @@ class ActivityLogin : AppCompatActivity() {
 
     }
 
-    fun showDialogPin(user:ModelUser?,token:String) {
+    fun showDialogPin(user:ModelFA?,token:String) {
 
         dialog = Dialog (mContext)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -94,7 +95,7 @@ class ActivityLogin : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun loginUser(user:ModelUser?,pin:String,token: String){
+    private fun loginUser(user:ModelFA?,pin:String,token: String){
 
         //pending, active, incomplete
 
@@ -106,7 +107,7 @@ class ActivityLogin : AppCompatActivity() {
                         db.collection(constants.FA_COLLECTION).document().get()
                             .addOnSuccessListener {
                                 utils.endLoadingAnimation()
-                                val nominee: ModelUser? = it.toObject(ModelUser::class.java)
+                                val nominee: ModelFA? = it.toObject(ModelFA::class.java)
                                 if (nominee != null) {
                                     if(user!=null)sharedPrefManager.saveLoginAuth(user, token, true)//usre +token+login_boolean
                                     if (nominee!=null) sharedPrefManager.saveUser(nominee)
@@ -116,9 +117,12 @@ class ActivityLogin : AppCompatActivity() {
                                         // Now you can start MainActivity
                                         startActivity(
                                             Intent(mContext, MainActivity::class.java)
-                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK).putExtra("FA",modelFa.toString())
                                         )
-                                        finish()
+                                        // Inside your ActivityLogin class
+                                        /*val intent = Intent(this@ActivityLogin, MainActivity::class.java)
+                                        intent.putExtra("FA", modelFa.toString()) // Replace "key" with your desired key and "value" with the actual value
+                                        startActivity(intent)*/
                                     }
                                 }
                             }
@@ -159,9 +163,9 @@ class ActivityLogin : AppCompatActivity() {
                         if(task.result.size()>0){
                             var token: String = ""
                             val documents = task.result
-                            var user: ModelUser? = null
+                            var user: ModelFA? = null
                             for (document in documents) {
-                                user = document.toObject(ModelUser::class.java)
+                                user = document.toObject(ModelFA::class.java)
                                 token= document.id
                             }
                             if(user?.status.equals(constants.INVESTOR_STATUS_ACTIVE) || user?.status.equals(constants.INVESTOR_STATUS_PENDING) || user?.status.equals(constants.INVESTOR_STATUS_INCOMPLETE) )
