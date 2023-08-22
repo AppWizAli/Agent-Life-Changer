@@ -51,15 +51,4 @@ class SharedPrefManager(context : Context) {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
 }

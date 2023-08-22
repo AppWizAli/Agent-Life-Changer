@@ -28,6 +28,10 @@ public class Constants  {
     public var INVESTOR_ID= "investorID"
     public var type= "investorID"
     public var TRANSACTION_TYPE= "type"
+    public var TRANSACTION_STATUS= "status" // Pending , Approved
+
+    public var FA_SIGNUP_MESSAGE= "Financial Adv. registered successfully!"
+
 
 
     ///////////////////////////  LOCAL KEYS  ///////////////////
