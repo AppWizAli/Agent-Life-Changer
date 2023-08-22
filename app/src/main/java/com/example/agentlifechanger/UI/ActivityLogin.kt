@@ -7,12 +7,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
+import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Models.ModelUser
 import com.example.agentlifechanger.R
@@ -21,62 +23,41 @@ import com.example.agentlifechanger.Utils
 import com.example.agentlifechanger.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class ActivityLogin : AppCompatActivity() {
 
+    private lateinit var binding : ActivityLoginBinding
+
     private lateinit var utils: Utils
     private lateinit var mContext: Context
-    private lateinit var binding : ActivityLoginBinding
-    private lateinit var modelUser: ModelUser
+    private var investorAccount: Boolean = true
+    private lateinit var dialogPinUpdate: Dialog
+    private lateinit var dialog1: Dialog
+
     private lateinit var constants: Constants
     private lateinit var sharedPrefManager : SharedPrefManager
-
     private lateinit var dialog : Dialog
-
-    private var db= Firebase.firestore
+    private lateinit var modelUser: ModelUser
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setContentView(binding.root)
         mContext=this@ActivityLogin
-        supportActionBar?.hide()
         utils = Utils(mContext)
         constants= Constants()
         sharedPrefManager = SharedPrefManager(mContext)
 
-        binding.btnSignIn.setOnClickListener {
-            if(TextUtils.isEmpty(binding.etCNIC.editText?.text.toString())){
-                binding.etCNIC.setError("Enter CNIC")
-            }
-            else if (binding.etCNIC.editText?.text.toString().length < 13){
-                binding.etCNIC.setError("Invalid CNIC")
-            }
-            else{
-                checkCNIC(binding.etCNIC.editText?.text.toString())
-            }
-        }
+        binding.btnSignIn.setOnClickListener(View.OnClickListener {
+            if((!IsEmpty()) && IsValid()) checkCNIC(utils.cnicFormate(   binding.etCNIC.editText?.text.toString()))
+        })
 
     }
 
-    private fun checkCNIC(cnic: String) {
-        utils.startLoadingAnimation()
-        db.collection(constants.FA_COLLECTION).whereEqualTo(constants.FA_CNIC,cnic)
-            .get()
-            .addOnCompleteListener{
-                if(it.isSuccessful){
-                    showDialogPin()
-                }else{
-                    Toast.makeText(mContext, constants.INVESTOR_CNIC, Toast.LENGTH_SHORT).show()
-                }
-            }
-            .addOnFailureListener{
-                Toast.makeText(mContext, it.message+"", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    fun showDialogPin() {
+    fun showDialogPin(user:ModelUser?,token:String) {
 
         dialog = Dialog (mContext)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -105,7 +86,7 @@ class ActivityLogin : AppCompatActivity() {
         btnSetPin.setOnClickListener {
             if(!utils.checkEmpty( listOf(etPin1, etPin2, etPin3, etPin4, etPin5, etPin6))){
                 var pin : String =  utils.getPIN( listOf(etPin1, etPin2, etPin3, etPin4, etPin5, etPin6))
-                login(binding.etCNIC.editText?.text.toString(),pin)
+                loginUser(user,pin,token)
             }
             else Toast.makeText(mContext, "Please enter 6 Digits Pin!", Toast.LENGTH_SHORT).show()
         }
@@ -113,49 +94,115 @@ class ActivityLogin : AppCompatActivity() {
         dialog.show()
     }
 
-    fun login(cnic: String, pin: String) {
+    private fun loginUser(user:ModelUser?,pin:String,token: String){
 
-        utils.startLoadingAnimation()
-        db.collection(constants.FA_COLLECTION).whereEqualTo(constants.FA_PIN,pin)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    utils.endLoadingAnimation()
-                    if (task.result.size() > 0) {
+        //pending, active, incomplete
 
+        if (user != null) {
+            if(user.pin.equals(pin)){
+                if(user.status.equals(constants.INVESTOR_STATUS_ACTIVE)||user.status.equals(constants.INVESTOR_STATUS_PENDING)){
+                    utils.startLoadingAnimation()
+                    lifecycleScope.launch {
+                        db.collection(constants.FA_COLLECTION).document().get()
+                            .addOnSuccessListener {
+                                utils.endLoadingAnimation()
+                                val nominee: ModelUser? = it.toObject(ModelUser::class.java)
+                                if (nominee != null) {
+                                    if(user!=null)sharedPrefManager.saveLoginAuth(user, token, true)//usre +token+login_boolean
+                                    if (nominee!=null) sharedPrefManager.saveUser(nominee)
+                                    //////// here -> nominee saved(if available), user saved , loginInfo saved //////
+                                    lifecycleScope.launch {
 
-                        var modelUser: ModelUser? = null
-                        for (document in task.result) {
-                            modelUser = document.toObject(ModelUser::class.java)
-                            modelUser.id = document.id
-                        }
-
-                        //Toast.makeText(mContext, pin+" "+modelUser?.pin, Toast.LENGTH_SHORT).show()
-                        if (modelUser?.pin.equals(pin)) {
-
-
-                            if (modelUser != null) {
-                                sharedPrefManager.saveLoginAuth(modelUser, modelUser.id, true)
+                                        // Now you can start MainActivity
+                                        startActivity(
+                                            Intent(mContext, MainActivity::class.java)
+                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        )
+                                        finish()
+                                    }
+                                }
+                            }
+                            .addOnFailureListener{
+                                utils.endLoadingAnimation()
+                                Toast.makeText(mContext, constants.SOMETHING_WENT_WRONG_MESSAGE, Toast.LENGTH_SHORT).show()
                             }
 
-                            //Toast.makeText(mContext, "Login Successfull", Toast.LENGTH_SHORT).show()
 
-                            startActivity(
-                                Intent(
-                                    mContext,
-                                    MainActivity::class.java
-                                ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                            )
-                            finish()
-
-                        } else Toast.makeText(mContext, "Incorrect PIN", Toast.LENGTH_SHORT).show()
-
-                    } else Toast.makeText(mContext, "CNIC Incorrect", Toast.LENGTH_LONG).show()
+                    }
 
                 }
+                else{
+                    if(user!=null)sharedPrefManager.saveLoginAuth(user, token, true)//usre +token+login_boolean
+                    startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+                    finish()
+                }
+
 
             }
+
+
+        }
+        else {
+            Toast.makeText(mContext, "Incorrect Pin", Toast.LENGTH_SHORT).show()
+        }
     }
+
+    private fun checkCNIC(cnic:String) {
+
+        utils.startLoadingAnimation()
+        lifecycleScope.launch{
+            db.collection(constants.FA_COLLECTION).whereEqualTo(constants.FA_CNIC,cnic).get()
+                .addOnCompleteListener{task ->
+                    utils.endLoadingAnimation()
+                    if (task.isSuccessful) {
+
+                        if(task.result.size()>0){
+                            var token: String = ""
+                            val documents = task.result
+                            var user: ModelUser? = null
+                            for (document in documents) {
+                                user = document.toObject(ModelUser::class.java)
+                                token= document.id
+                            }
+                            if(user?.status.equals(constants.INVESTOR_STATUS_ACTIVE) || user?.status.equals(constants.INVESTOR_STATUS_PENDING) || user?.status.equals(constants.INVESTOR_STATUS_INCOMPLETE) )
+                                showDialogPin(user,token)
+                            else if(user?.status.equals(constants.INVESTOR_STATUS_BLOCKED))
+                                binding.etCNIC.editText?.error =constants.INVESTOR_CNIC_BLOCKED
+                            else if(documents.size()==0)
+                                binding.etCNIC.editText?.error =constants.INVESTOR_CNIC_NOT_EXIST
+                        }
+                        else binding.etCNIC.editText?.error =constants.INVESTOR_CNIC_NOT_EXIST
+                    }
+
+                }
+                .addOnFailureListener{
+                    utils.endLoadingAnimation()
+                    Toast.makeText(mContext, it.message+"", Toast.LENGTH_SHORT).show()
+                }
+
+        }
+    }
+
+    private fun IsEmpty(): Boolean {
+
+        val result = MutableLiveData<Boolean>()
+        result.value=true
+        if (binding.etCNIC.editText?.text.toString().isEmpty()) binding.etCNIC.editText?.error = "Empty CNIC"
+        else result.value = false
+
+        return result.value!!
+    }
+    private fun IsValid(): Boolean {
+
+        val result = MutableLiveData<Boolean>()
+        result.value=false
+        if (binding.etCNIC.editText?.text.toString().length<13) binding.etCNIC.editText?.error = "Invalid CNIC"
+        else result.value = true
+
+        return result.value!!
+    }
+
+
 
 
 }
