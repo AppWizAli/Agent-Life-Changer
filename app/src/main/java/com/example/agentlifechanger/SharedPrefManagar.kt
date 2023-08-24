@@ -2,20 +2,19 @@ package com.example.agentlifechanger
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.enfotrix.lifechanger.Models.User
 import com.example.agentlifechanger.Models.ModelFA
+import com.example.agentlifechanger.Models.User
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-class SharedPrefManager(context : Context) {
+class SharedPrefManagar (context: Context ){
 
     private val sharedPref: SharedPreferences = context.getSharedPreferences("myAppPrefs", Context.MODE_PRIVATE)
 
     private val editor: SharedPreferences.Editor = sharedPref.edit()
 
     fun saveUser(user: ModelFA) {
-
         editor.putString("com.example.agentlifechanger.Models.User", Gson().toJson(user))
         editor.commit()
     }
@@ -36,7 +35,7 @@ class SharedPrefManager(context : Context) {
         return isLoggedIn
     }
 
-    fun saveLoginAuth(user: ModelFA,token:String, loggedIn: Boolean){
+    fun saveLoginAuth(user: ModelFA, token:String, loggedIn: Boolean){
         saveUser(user)
         putToken(token)
         setLogin(loggedIn)
@@ -50,6 +49,18 @@ class SharedPrefManager(context : Context) {
         editor.putBoolean("isLoggedIn", isLoggedOut)
         editor.commit()
     }
+    fun putUserList(list: List<User>) {
+        editor.putString("ListUser", Gson().toJson(list))
+        editor.commit()
+    }
+
+    fun getUser(): ModelFA {
+
+        val json = sharedPref.getString("User", "") ?: ""
+        return Gson().fromJson(json, ModelFA::class.java)
+
+    }
+
 
     fun getUsersList(): List<User>{
 
