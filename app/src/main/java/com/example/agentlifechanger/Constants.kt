@@ -23,6 +23,7 @@ public class Constants  {
     public var FA_CNIC= "cnic"
     public var FA_PIN= "pin"
     public var INVESTOR_CNIC= "cnic"
+    public var INVESTOR_FA_ID= "fa_id"
     public var INVESTOR_PIN= "password"
     public var ACCOUNT_HOLDER= "account_holder"
     public var INVESTOR_ID= "investorID"

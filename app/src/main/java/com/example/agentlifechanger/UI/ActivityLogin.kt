@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.R
-import com.example.agentlifechanger.SharedPrefManager
+import com.example.agentlifechanger.SharedPrefManagar
 import com.example.agentlifechanger.Utils
 import com.example.agentlifechanger.databinding.ActivityLoginBinding
 import com.google.firebase.firestore.ktx.firestore
@@ -32,12 +32,8 @@ class ActivityLogin : AppCompatActivity() {
 
     private lateinit var utils: Utils
     private lateinit var mContext: Context
-    private var investorAccount: Boolean = true
-    private lateinit var dialogPinUpdate: Dialog
-    private lateinit var dialog1: Dialog
-
     private lateinit var constants: Constants
-    private lateinit var sharedPrefManager : SharedPrefManager
+    private lateinit var sharedPrefManager : SharedPrefManagar
     private lateinit var dialog : Dialog
     private lateinit var modelFa: ModelFA
     private val db = Firebase.firestore
@@ -47,10 +43,10 @@ class ActivityLogin : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mContext=this@ActivityLogin
-        modelFa = ModelFA("",",",",","","","","","","","","","","")
+        modelFa = ModelFA()
         utils = Utils(mContext)
         constants= Constants()
-        sharedPrefManager = SharedPrefManager(mContext)
+        sharedPrefManager = SharedPrefManagar(mContext)
 
         binding.btnSignIn.setOnClickListener(View.OnClickListener {
             if((!IsEmpty()) && IsValid()) checkCNIC(utils.cnicFormate(   binding.etCNIC.editText?.text.toString()))
@@ -116,9 +112,12 @@ class ActivityLogin : AppCompatActivity() {
 
                                         // Now you can start MainActivity
                                         startActivity(
-                                            Intent(mContext, MainActivity::class.java)
-                                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK).putExtra("FA",modelFa.toString())
+                                            Intent(
+                                                mContext,
+                                                MainActivity::class.java
+                                            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                                         )
+                                        finish()
                                         // Inside your ActivityLogin class
                                         /*val intent = Intent(this@ActivityLogin, MainActivity::class.java)
                                         intent.putExtra("FA", modelFa.toString()) // Replace "key" with your desired key and "value" with the actual value

@@ -16,8 +16,8 @@ data class ModelFA @JvmOverloads constructor(
     var pin: String = "",
     var id: String = "",
     var designantion: String = "",
-//    val createdAt: Timestamp = Timestamp.now(), // Creation timestamp
-    val password: String = ""
+    val createdAt: Timestamp = Timestamp.now(), // Creation timestamp
+//    val password: String = ""
 ) {
 
     override fun toString(): String {

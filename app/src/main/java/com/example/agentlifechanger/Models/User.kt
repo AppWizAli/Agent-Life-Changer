@@ -1,4 +1,4 @@
-package com.enfotrix.lifechanger.Models
+package com.example.agentlifechanger.Models
 
 import android.os.Parcelable
 import com.google.firebase.Timestamp
