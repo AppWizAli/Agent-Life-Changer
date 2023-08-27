@@ -77,6 +77,7 @@ class ActivityEditProfile : AppCompatActivity() {
 
     }
 
+//    toas?
     private fun update(){
 
         val editedFirstName = binding.etFirstName.editText?.text.toString()
