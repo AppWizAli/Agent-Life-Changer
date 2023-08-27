@@ -150,6 +150,7 @@ class ActivityLogin : AppCompatActivity() {
         }
     }
 
+
     private fun checkCNIC(cnic:String) {
 
         utils.startLoadingAnimation()

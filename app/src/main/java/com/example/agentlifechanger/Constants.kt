@@ -38,6 +38,8 @@ public class Constants  {
     ///////////////////////////  LOCAL KEYS  ///////////////////
     public var KEY_ACTIVITY_FLOW= "flow"
 
+    public var UPDATE_SUCCESSFULLY = "Update Successfully"
+
     ///////////////////////////  LOCAL KEYS Values ///////////////////
     public var VALUE_ACTIVITY_FLOW_USER_DETAILS= "from_user_details"
     public var VALUE_DIALOG_FLOW_INVESTOR_BANK= "from_investor"

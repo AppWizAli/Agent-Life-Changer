@@ -56,7 +56,7 @@ class SharedPrefManagar (context: Context ){
 
     fun getUser(): ModelFA {
 
-        val json = sharedPref.getString("User", "") ?: ""
+        val json = sharedPref.getString("com.example.agentlifechanger.Models.User", "") ?: ""
         return Gson().fromJson(json, ModelFA::class.java)
 
     }
