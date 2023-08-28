@@ -2,58 +2,52 @@ package com.example.agentlifechanger.UI
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.parser.IntegerParser
 import com.bumptech.glide.Glide
 import com.example.agentlifechanger.Adapters.AdapterClient
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Data.Repo
+import com.example.agentlifechanger.Models.InvestmentModel
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.Models.User
 import com.example.agentlifechanger.R
 import com.example.agentlifechanger.SharedPrefManagar
 import com.example.agentlifechanger.Utils
 import com.example.agentlifechanger.databinding.ActivityMainBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.launch
+import org.bouncycastle.util.Integers
 import java.util.Locale
 
 
 class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
 
-    private lateinit var rvInvestors: RecyclerView
-    private var originalFAList: List<User> = emptyList()
-    private var originallist: List<User> = emptyList()
-    private lateinit var adapter: AdapterClient
     private lateinit var repo: Repo
-
 
     private lateinit var mContext: Context
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPrefManager: SharedPrefManagar
     private lateinit var utils: Utils
     private var constants = Constants()
-    private lateinit var dialog: BottomSheetDialog
     private val db = Firebase.firestore
-
     private lateinit var modelFA: ModelFA
+
     private lateinit var userArraylist: ArrayList<User>
+    private lateinit var investorIDArraylist: ArrayList<InvestmentModel>
+    private lateinit var balanceArraylist: ArrayList<Int>
+
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var myAdapter: AdapterClient
 
@@ -76,7 +70,9 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
+        investorIDArraylist = arrayListOf()
         userArraylist = arrayListOf()
+        balanceArraylist = arrayListOf()
 
         myAdapter = AdapterClient(id, userArraylist,this)
 
@@ -85,9 +81,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         getFAID()
 
 
-        binding.fbAddClient.setOnClickListener {
-            showClientDialog()
-        }
         binding.svClients.setOnQueryTextListener(object :
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -101,15 +94,13 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         })
 
         binding.tveditfa.setOnClickListener {
-            /*startActivity(Intent(this@MainActivity, ActivityEditFA::class.java).apply {
-                putExtra("FA", modelFA.toString())
-            })*/
+            startActivity(Intent(this,ActivityEditProfile::class.java))
         }
 
     }
 
     private fun EventChangeListener() {
-        db.collection(constants.INVESTOR_COLLECTION).whereEqualTo(constants.INVESTOR_FA_ID,id)
+        db.collection(constants.INVESTOR_COLLECTION).whereEqualTo(constants.INVESTOR_FA_ID,sharedPrefManager.getToken())
             .addSnapshotListener(object :
                 com.google.firebase.firestore.EventListener<QuerySnapshot> {
                 override fun onEvent(
@@ -132,6 +123,11 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
     }
 
 
+    override fun onRestart() {
+        super.onRestart()
+        startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+
     private fun getFAID() {
         db.collection(constants.FA_COLLECTION).whereEqualTo(FieldPath.documentId(),sharedPrefManager.getToken())
             .addSnapshotListener { snapshot, e ->
@@ -140,7 +136,7 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
                     snapshot.documents?.forEach { document ->
                         id =document.getString("id").toString()
                         photo = document.getString("photo").toString()
-                        binding.tvInvestorName.setText(document.getString("firstName")+""+document.getString("lastName"))
+                        binding.tvInvestorName.setText(document.getString("firstName")+" "+document.getString("lastName"))
                         binding.tvInvestordesignation.setText(document.getString("designantion"))
                         binding.tvInvestorCnic.setText(document.getString("cnic"))
                         binding.tvInvestorPhoneNumber.setText(document.getString("phone"))
@@ -149,7 +145,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
                             .centerCrop()
                             .placeholder(R.drawable.ic_launcher_background) // Placeholder image while loading
                             .into(binding.imageView)
-
                         utils.endLoadingAnimation()
                         EventChangeListener()
                     }
@@ -157,17 +152,16 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
             }
 
     }
-    fun getData() {
+   /* fun getData() {
 
         binding.rvClients.adapter =AdapterClient(id, userArraylist,this)
 
-    }
-
+    }*/
 
     override fun onItemClick(user: User) {
     }
 
-    override fun onAssignClick(user: User) {
+   /* override fun onAssignClick(user: User) {
         user.fa_id = modelFA.id
         utils.startLoadingAnimation()
         lifecycleScope.launch {
@@ -219,9 +213,9 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
 
         }
 
-    }
+    }*/
 
-    override fun onRemoveClick(user: User) {
+   /* override fun onRemoveClick(user: User) {
         user.fa_id = "" // Set the fa_id to empty to indicate unassigned status
 
         utils.startLoadingAnimation()
@@ -260,74 +254,17 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
                 Toast.makeText(mContext, it.message + "", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-
-    fun showClientDialog() {
-        dialog = BottomSheetDialog(mContext)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setContentView(R.layout.bottom_sheet_investors)
-        rvInvestors = dialog.findViewById<RecyclerView>(R.id.rvInvestors) as RecyclerView
-        rvInvestors.layoutManager = LinearLayoutManager(mContext)
-        rvInvestors.adapter =
-            repo.getInvestorsAdapter(constants.FROM_UN_ASSIGNED_FA, this@MainActivity)
-        dialog.show()
-        val svFadetail = dialog.findViewById<androidx.appcompat.widget.SearchView>(R.id.svFadetail)
-        svFadetail?.setOnQueryTextListener(object :
-            androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                filter(newText)
-                return false
-            }
-        })
-
-
-    }
-
-
-    private fun filter(text: String) {
-        val filteredList = ArrayList<User>()
-        if (text.isEmpty() || text.isBlank()) {
-            rvInvestors.adapter = AdapterClient(
-                constants.FROM_UN_ASSIGNED_FA,
-                originallist,
-                this@MainActivity
-            )
-        } else {
-            for (user in originallist) {
-                if (user.firstName.toLowerCase(Locale.getDefault())
-                        .contains(text.toLowerCase(Locale.getDefault()))
-                ) {
-                    filteredList.add(user)
-                }
-            }
-
-            if (filteredList.isEmpty()) {
-                Toast.makeText(mContext, "No Data Found..", Toast.LENGTH_SHORT).show()
-            } else {
-                rvInvestors.adapter = AdapterClient(
-                    constants.FROM_UN_ASSIGNED_FA,
-                    filteredList,
-                    this@MainActivity
-                )
-            }
-        }
-    }
+    }*/
 
     private fun filterclients(text: String) {
         // creating a new array list to filter our data.
         val filteredlist = ArrayList<User>()
         if (text.isEmpty() || text.equals("")) {
             binding.rvClients.adapter =
-                AdapterClient(constants.FROM_ASSIGNED_FA, originalFAList, this@MainActivity)
+                AdapterClient(constants.FROM_ASSIGNED_FA, userArraylist, this@MainActivity)
 
         } else {
-            for (user in originalFAList) {
+            for (user in userArraylist) {
 
                 // Toast.makeText(this@ActivityFADetails, user.cnic +"", Toast.LENGTH_SHORT).show()
                 // checking if the entered string matched with any item of our recycler view.
@@ -357,8 +294,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         // running a for loop to compare elements.
 
     }
-
-
 
 }
 

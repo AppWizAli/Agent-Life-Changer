@@ -12,7 +12,7 @@ public class Constants  {
     public var ACCOUNTS_COLLECTION="Accounts"
     public var INVESTMENT_COLLECTION="Investment"
     public var ANNOUNCEMENT_COLLECTION="Admin Announcement"
-    public var TRANSACTION_REQ_COLLECTION="Transactions"
+    public var TRANSACTION_COLLECTION="Transactions"
     public var PROFIT_TAX_COLLECTION="ProfitTax"
     public var WITHDRAW_COLLECTION="Withdraw"
     public var NOTIFICATION_COLLECTION="Notification"
@@ -37,6 +37,8 @@ public class Constants  {
 
     ///////////////////////////  LOCAL KEYS  ///////////////////
     public var KEY_ACTIVITY_FLOW= "flow"
+
+    public var UPDATE_SUCCESSFULLY = "Update Successfully"
 
     ///////////////////////////  LOCAL KEYS Values ///////////////////
     public var VALUE_ACTIVITY_FLOW_USER_DETAILS= "from_user_details"

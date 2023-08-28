@@ -60,12 +60,10 @@ class ActivitySplash : AppCompatActivity() {
 
 
         fun getUser() {
-            utils.startLoadingAnimation()
             lifecycleScope.launch {
                 db.collection(constants.INVESTOR_COLLECTION)
                     .get()
                     .addOnCompleteListener { task ->
-                        utils.endLoadingAnimation()
                         if (task.isSuccessful) {
                             val list = ArrayList<User>()
                             if (task.result.size() > 0) {
