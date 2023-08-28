@@ -26,6 +26,7 @@ class Repo (val context: Context) {
 
     private var InvestorsCollection = db.collection(constants.INVESTOR_COLLECTION)
     private var FACollection = db.collection(constants.FA_COLLECTION)
+    private val TransactionsCollection = db.collection(constants.TRANSACTION_COLLECTION)
 
 
     private val firebaseStorage = Firebase.storage
@@ -145,6 +146,20 @@ class Repo (val context: Context) {
         val result = MutableLiveData<Boolean>()
         val faUpdate = mapOf(
             "address" to address,
+        )
+        FACollection.document(id).update(faUpdate)
+            .addOnSuccessListener {
+                result.value = true
+            }.addOnFailureListener {
+                result.value = false
+            }
+
+        return result
+    }
+    fun updateFAPhone(id: String,phone : String): MutableLiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        val faUpdate = mapOf(
+            "phone" to phone,
         )
         FACollection.document(id).update(faUpdate)
             .addOnSuccessListener {

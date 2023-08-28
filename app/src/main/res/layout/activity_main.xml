@@ -178,14 +178,15 @@
                             android:textColor="@color/gray"
                             android:text="Rs"
                             android:textSize="12dp"/>
+
                         <TextView
                             android:id="@+id/tvInvestment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="00"
                             android:layout_marginLeft="5dp"
-                            android:textStyle="bold"
-                            android:textSize="24dp"/>
+                            android:text="00"
+                            android:textSize="24dp"
+                            android:textStyle="bold" />
 
 
                     </LinearLayout>

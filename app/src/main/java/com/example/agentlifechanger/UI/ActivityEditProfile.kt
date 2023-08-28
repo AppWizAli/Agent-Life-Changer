@@ -85,6 +85,7 @@ class ActivityEditProfile : AppCompatActivity() {
         val editedCNIC = binding.etCNIC.editText?.text.toString()
         val editedpassword = binding.etpassword.editText?.text.toString()
         val editedaddress = binding.etAddress.editText?.text.toString()
+        val editedPhone = binding.etPhone.editText?.text.toString()
 
         if (TextUtils.isEmpty(editedFirstName)){
         }
@@ -124,7 +125,7 @@ class ActivityEditProfile : AppCompatActivity() {
             }
         }
 
-        if (TextUtils.isEmpty(editedDesignation))
+        if (TextUtils.isEmpty(editedDesignation)){}
         else if(!TextUtils.isEmpty(editedDesignation)){
             lifecycleScope.launch {
                 val isSuccessLiveData = repo.updateFADesignation(
@@ -142,7 +143,7 @@ class ActivityEditProfile : AppCompatActivity() {
             }
         }
 
-        if (TextUtils.isEmpty(editedCNIC))
+        if (TextUtils.isEmpty(editedCNIC)){}
         else if(!TextUtils.isEmpty(editedCNIC)){
             lifecycleScope.launch {
                 val isSuccessLiveData = repo.updateFACNIC(
@@ -160,7 +161,7 @@ class ActivityEditProfile : AppCompatActivity() {
             }
         }
 
-        if (TextUtils.isEmpty(editedpassword))
+        if (TextUtils.isEmpty(editedpassword)){}
         else if(!TextUtils.isEmpty(editedpassword)){
             lifecycleScope.launch {
                 val isSuccessLiveData = repo.updateFAPassword(
@@ -178,7 +179,7 @@ class ActivityEditProfile : AppCompatActivity() {
             }
         }
 
-        if (TextUtils.isEmpty(editedaddress))
+        if (TextUtils.isEmpty(editedaddress)){}
         else if(!TextUtils.isEmpty(editedaddress)){
             lifecycleScope.launch {
                 val isSuccessLiveData = repo.updateFAAddress(
@@ -195,6 +196,24 @@ class ActivityEditProfile : AppCompatActivity() {
                 }
             }
         }
+
+        if (TextUtils.isEmpty(editedPhone)){}
+        else if (!TextUtils.isEmpty(editedPhone)){
+            lifecycleScope.launch {
+                val isSuccessLiveData = repo.updateFAPhone(
+                    sharedPrefManager.getToken(),
+                    editedPhone,
+                )
+                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
+                    if (isSuccess) {
+                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
+
+                    } else {
+                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            }
 
 
     }

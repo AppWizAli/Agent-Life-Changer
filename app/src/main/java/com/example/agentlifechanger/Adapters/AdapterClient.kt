@@ -50,8 +50,8 @@ class AdapterClient (var activity: String, val userlist: List<User>, val listene
 
     interface OnItemClickListener {
         fun onItemClick(user:User)
-       /* fun onAssignClick(user:User)
-        fun onRemoveClick(user:User)*/
+        /* fun onAssignClick(user:User)
+         fun onRemoveClick(user:User)*/
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
 

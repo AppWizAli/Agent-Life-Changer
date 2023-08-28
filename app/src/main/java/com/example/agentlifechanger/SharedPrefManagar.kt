@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.Models.User
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
@@ -73,6 +74,5 @@ class SharedPrefManagar (context: Context ){
             emptyList()
         }
     }
-
 
 }

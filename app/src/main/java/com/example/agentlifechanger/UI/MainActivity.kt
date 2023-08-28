@@ -8,10 +8,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.parser.IntegerParser
 import com.bumptech.glide.Glide
 import com.example.agentlifechanger.Adapters.AdapterClient
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Data.Repo
+import com.example.agentlifechanger.Models.InvestmentModel
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.Models.User
 import com.example.agentlifechanger.R
@@ -23,7 +25,9 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import org.bouncycastle.util.Integers
 import java.util.Locale
 
 
@@ -37,9 +41,13 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
     private lateinit var utils: Utils
     private var constants = Constants()
     private val db = Firebase.firestore
-
     private lateinit var modelFA: ModelFA
+
     private lateinit var userArraylist: ArrayList<User>
+    private lateinit var investorIDArraylist: ArrayList<InvestmentModel>
+    private lateinit var balanceArraylist: ArrayList<Int>
+
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var myAdapter: AdapterClient
 
@@ -62,14 +70,15 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
+        investorIDArraylist = arrayListOf()
         userArraylist = arrayListOf()
+        balanceArraylist = arrayListOf()
 
         myAdapter = AdapterClient(id, userArraylist,this)
 
         recyclerView.adapter = myAdapter
 
         getFAID()
-
 
 
         binding.svClients.setOnQueryTextListener(object :
@@ -113,11 +122,11 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
             })
     }
 
+
     override fun onRestart() {
         super.onRestart()
         startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
     }
-
 
     private fun getFAID() {
         db.collection(constants.FA_COLLECTION).whereEqualTo(FieldPath.documentId(),sharedPrefManager.getToken())
@@ -148,7 +157,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         binding.rvClients.adapter =AdapterClient(id, userArraylist,this)
 
     }*/
-
 
     override fun onItemClick(user: User) {
     }
@@ -248,7 +256,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         }
     }*/
 
-
     private fun filterclients(text: String) {
         // creating a new array list to filter our data.
         val filteredlist = ArrayList<User>()
@@ -287,10 +294,6 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         // running a for loop to compare elements.
 
     }
-
-
-
-
 
 }
 
