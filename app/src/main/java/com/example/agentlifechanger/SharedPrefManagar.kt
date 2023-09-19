@@ -74,5 +74,31 @@ class SharedPrefManagar (context: Context ){
             emptyList()
         }
     }
+fun putId(id:String)
+{
+    editor.putString("id",id)
+    editor.commit()
+}
+
+    fun getId(): String?
+
+    {
+       return sharedPref.getString("id","")
+
+    }
+
+
+
+    fun putAssignedInvestor(list:List<User>)
+    {
+        editor.putString("AssignedInvestor",Gson().toJson(list))
+        editor.commit()
+    }
+    fun getAssignedInvestor(): List<User> {
+        val json = sharedPref.getString("AssignedInvestor", "") ?: ""
+        val type: Type = object : TypeToken<List<User?>?>() {}.type
+        return Gson().fromJson(json, type) ?: emptyList()
+    }
+
 
 }

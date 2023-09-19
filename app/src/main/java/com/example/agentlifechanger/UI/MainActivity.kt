@@ -5,7 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.parser.IntegerParser
@@ -13,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.example.agentlifechanger.Adapters.AdapterClient
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Data.Repo
+import com.example.agentlifechanger.Models.InvesterViewModel
 import com.example.agentlifechanger.Models.InvestmentModel
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.Models.User
@@ -27,11 +31,12 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import org.bouncycastle.util.Integers
 import java.util.Locale
 
 
-class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
+class MainActivity : AppCompatActivity(), AdapterClient.OnItemClickListener {
 
     private lateinit var repo: Repo
 
@@ -46,6 +51,10 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
     private lateinit var userArraylist: ArrayList<User>
     private lateinit var investorIDArraylist: ArrayList<InvestmentModel>
     private lateinit var balanceArraylist: ArrayList<Int>
+
+
+    private val investerViewModel: InvesterViewModel by viewModels()
+
 
 
     private lateinit var recyclerView: RecyclerView
@@ -73,12 +82,22 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         investorIDArraylist = arrayListOf()
         userArraylist = arrayListOf()
         balanceArraylist = arrayListOf()
+       getFAID()
+        getData()
 
-        myAdapter = AdapterClient(id, userArraylist,this)
+        getBalance()
+
+        myAdapter = AdapterClient(
+            id,
+           sharedPrefManager.getAssignedInvestor(),
+            this
+        )
 
         recyclerView.adapter = myAdapter
 
-        getFAID()
+
+
+
 
 
         binding.svClients.setOnQueryTextListener(object :
@@ -99,28 +118,7 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
 
     }
 
-    private fun EventChangeListener() {
-        db.collection(constants.INVESTOR_COLLECTION).whereEqualTo(constants.INVESTOR_FA_ID,sharedPrefManager.getToken())
-            .addSnapshotListener(object :
-                com.google.firebase.firestore.EventListener<QuerySnapshot> {
-                override fun onEvent(
-                    value: QuerySnapshot?,
-                    error: FirebaseFirestoreException?
-                ) {
-                    if (error != null) {
-                        Log.e("FireStore Error", error.message.toString())
-                        return
-                    }
 
-                    for (dc: DocumentChange in value?.documentChanges!!) {
-                        if (dc.type == DocumentChange.Type.ADDED) {
-                            userArraylist.add(dc.document.toObject(User::class.java))
-                        }
-                    }
-                    myAdapter.notifyDataSetChanged()
-                }
-            })
-    }
 
 
     override fun onRestart() {
@@ -128,146 +126,16 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
         startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
-    private fun getFAID() {
-        db.collection(constants.FA_COLLECTION).whereEqualTo(FieldPath.documentId(),sharedPrefManager.getToken())
-            .addSnapshotListener { snapshot, e ->
-                if (snapshot != null) {
-                    utils.startLoadingAnimation()
-                    snapshot.documents?.forEach { document ->
-                        id =document.getString("id").toString()
-                        photo = document.getString("photo").toString()
-                        binding.tvInvestorName.setText(document.getString("firstName")+" "+document.getString("lastName"))
-                        binding.tvInvestordesignation.setText(document.getString("designantion"))
-                        binding.tvInvestorCnic.setText(document.getString("cnic"))
-                        binding.tvInvestorPhoneNumber.setText(document.getString("phone"))
-                        Glide.with(mContext)
-                            .load(photo)
-                            .centerCrop()
-                            .placeholder(R.drawable.ic_launcher_background) // Placeholder image while loading
-                            .into(binding.imageView)
-                        utils.endLoadingAnimation()
-                        EventChangeListener()
-                    }
-                }
-            }
-
-    }
-   /* fun getData() {
-
-        binding.rvClients.adapter =AdapterClient(id, userArraylist,this)
-
-    }*/
-
-    override fun onItemClick(user: User) {
-    }
-
-   /* override fun onAssignClick(user: User) {
-        user.fa_id = modelFA.id
-        utils.startLoadingAnimation()
-        lifecycleScope.launch {
-            repo.setUser(user)
-                .addOnCompleteListener { task ->
-                    lifecycleScope.launch {
-                        repo.getUsers()
-                            .addOnCompleteListener { task ->
-                                utils.endLoadingAnimation()
-                                if (task.isSuccessful) {
-                                    val list = ArrayList<User>()
-                                    if (task.result.size() > 0) {
-                                        for (document in task.result) list.add(
-                                            document.toObject(
-                                                User::class.java
-                                            ).apply { id = document.id })
-                                        sharedPrefManager.putUserList(list)
-                                        dialog.dismiss()
-
-                                        Toast.makeText(mContext, "Assigned", Toast.LENGTH_SHORT)
-                                            .show()
-                                        getData()
-                                    }
-                                } else Toast.makeText(
-                                    mContext,
-                                    constants.SOMETHING_WENT_WRONG_MESSAGE,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                            }
-                            .addOnFailureListener {
-                                utils.endLoadingAnimation()
-                                dialog.dismiss()
-
-                                Toast.makeText(mContext, it.message + "", Toast.LENGTH_SHORT).show()
-
-                            }
-                    }
-
-
-                }
-                .addOnFailureListener {
-                    utils.endLoadingAnimation()
-                    dialog.dismiss()
-                    Toast.makeText(mContext, it.message + "", Toast.LENGTH_SHORT).show()
-
-                }
-
-
-        }
-
-    }*/
-
-   /* override fun onRemoveClick(user: User) {
-        user.fa_id = "" // Set the fa_id to empty to indicate unassigned status
-
-        utils.startLoadingAnimation()
-        lifecycleScope.launch {
-            repo.setUser(user).addOnCompleteListener { task ->
-                lifecycleScope.launch {
-                    repo.getUsers().addOnCompleteListener { task ->
-                        utils.endLoadingAnimation()
-                        if (task.isSuccessful) {
-                            val list = ArrayList<User>()
-                            if (task.result.size() > 0) {
-                                for (document in task.result) list.add(
-                                    document.toObject(User::class.java).apply { id = document.id })
-                                sharedPrefManager.putUserList(list)
-                                Toast.makeText(
-                                    mContext,
-                                    "Removed from assigned",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                getData()
-                            }
-                        } else {
-                            Toast.makeText(
-                                mContext,
-                                constants.SOMETHING_WENT_WRONG_MESSAGE,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }.addOnFailureListener {
-                        utils.endLoadingAnimation()
-                        Toast.makeText(mContext, it.message + "", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }.addOnFailureListener {
-                utils.endLoadingAnimation()
-                Toast.makeText(mContext, it.message + "", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }*/
 
     private fun filterclients(text: String) {
         // creating a new array list to filter our data.
         val filteredlist = ArrayList<User>()
         if (text.isEmpty() || text.equals("")) {
             binding.rvClients.adapter =
-                AdapterClient(constants.FROM_ASSIGNED_FA, userArraylist, this@MainActivity)
+                AdapterClient(constants.FROM_ASSIGNED_FA, sharedPrefManager.getAssignedInvestor(), this@MainActivity)
 
         } else {
-            for (user in userArraylist) {
-
-                // Toast.makeText(this@ActivityFADetails, user.cnic +"", Toast.LENGTH_SHORT).show()
-                // checking if the entered string matched with any item of our recycler view.
+            for (user in sharedPrefManager.getAssignedInvestor()) {
                 if (user.firstName.toLowerCase(Locale.getDefault())
                         .contains(text.toLowerCase(Locale.getDefault()))
                 ) {
@@ -275,13 +143,8 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
                 }
             }
             if (filteredlist.isEmpty()) {
-                // if no item is added in filtered list we are
-                // displaying a toast message as no data found.
                 Toast.makeText(mContext, "No Data Found..", Toast.LENGTH_SHORT).show()
             } else {
-                // at last we are passing that filtered
-                // list to our adapter class.
-
 
                 binding.rvClients.adapter = AdapterClient(
                     constants.FROM_ASSIGNED_FA,
@@ -291,9 +154,120 @@ class MainActivity : AppCompatActivity() , AdapterClient.OnItemClickListener{
 
             }
         }
-        // running a for loop to compare elements.
 
     }
 
-}
+
+
+
+
+
+
+    fun getData() {
+        utils.startLoadingAnimation()
+        lifecycleScope.launch {
+            investerViewModel.getInvestors()
+                .addOnCompleteListener { task ->
+                    utils.endLoadingAnimation()
+                    if (task.isSuccessful) {
+                        val AssignedInvestorList = ArrayList<User>()
+                        if (task.result.size() > 0) {
+                            for (document in task.result) {
+                                if (document.toObject(User::class.java).fa_id == sharedPrefManager.getToken())
+                                {
+                                    AssignedInvestorList.add(
+                                        document.toObject(User::class.java)
+                                    )
+                                      }
+
+                            }
+                            sharedPrefManager.putAssignedInvestor(AssignedInvestorList)
+
+
+                        } else Toast.makeText(
+                            mContext,
+                            "SOMETHING_WENT_WRONG_MESSAGE",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+                .addOnFailureListener {
+                    utils.endLoadingAnimation()
+
+
+                }
+
+        }
+    }
+
+    fun getBalance() {
+        var balance:Int=0
+        lifecycleScope.launch {
+            investerViewModel.getInvestement()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        if (task.result.size() > 0) {
+                            for (document in task.result) {
+                                for (invest in sharedPrefManager.getAssignedInvestor()) {
+                                    if (document.toObject(InvestmentModel::class.java).investorID == invest.id) {
+
+                                        balance += document.toObject(InvestmentModel::class.java).investmentBalance.toInt()
+                                        Toast.makeText(mContext, ""+document.toObject(InvestmentModel::class.java).investmentBalance.toString(), Toast.LENGTH_SHORT).show()
+                                    }
+
+                                }
+                            }
+                            binding.tvInvestment.text=balance.toString()
+
+
+                        } else Toast.makeText(
+                            mContext,
+                            "SOMETHING_WENT_WRONG_MESSAGE",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                }
+                .addOnFailureListener {
+
+
+                }
+
+        }
+    }
+        override fun onItemClick(user: User) {
+            Toast.makeText(mContext, "clicked", Toast.LENGTH_SHORT).show()
+        }
+
+
+
+    private fun getFAID() {
+        db.collection(constants.FA_COLLECTION).whereEqualTo(FieldPath.documentId(),sharedPrefManager.getToken())
+            .addSnapshotListener { snapshot, e ->
+                if (snapshot != null) {
+                    snapshot.documents?.forEach { document ->
+                        id =document.getString("id").toString()
+                        photo = document.getString("photo").toString()
+                        sharedPrefManager.putId(document.id)
+                        binding.tvInvestorName.setText(document.getString("firstName")+" "+document.getString("lastName"))
+                        binding.tvInvestordesignation.setText(document.getString("designantion"))
+                        binding.tvInvestorCnic.setText(document.getString("cnic"))
+                        binding.tvInvestorPhoneNumber.setText(document.getString("phone"))
+                        Glide.with(mContext)
+                            .load(photo)
+                            .centerCrop()
+                            .placeholder(R.drawable.ic_launcher_background) // Placeholder image while loading
+                            .into(binding.imageView)
+
+
+                    }
+                }
+            }
+
+    }
+
+
+    }
+
 

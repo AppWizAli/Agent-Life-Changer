@@ -25,6 +25,7 @@ class Repo (val context: Context) {
     private val db = Firebase.firestore
 
     private var InvestorsCollection = db.collection(constants.INVESTOR_COLLECTION)
+    private var InvestmentCollection = db.collection(constants.INVESTMENT_COLLECTION)
     private var FACollection = db.collection(constants.FA_COLLECTION)
     private val TransactionsCollection = db.collection(constants.TRANSACTION_COLLECTION)
 
@@ -47,131 +48,26 @@ class Repo (val context: Context) {
         )
     }
 
-
-    suspend fun setUser(user: User): Task<Void> {
-        return InvestorsCollection.document(user.id).set(user)
-    }
-
-     fun getUsers(): Task<QuerySnapshot> {
+     fun getInvestors(): Task<QuerySnapshot> {
         return InvestorsCollection.get()
+    }
+    fun getInvestement(): Task<QuerySnapshot> {
+        return InvestmentCollection.get()
     }
 
     fun uploadPhoto(imageUri: Uri, type:String): UploadTask {
         return storageRef.child(    type+"/"+sharedPrefManager.getToken()).putFile(imageUri)
     }
 
-    fun updateUserPhoto(user: ModelFA): LiveData<Boolean> {
+    fun updateFA(modelFA: ModelFA): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
-        FACollection.document(sharedPrefManager.getToken()).set(user).addOnSuccessListener { documents ->
+        FACollection.document(sharedPrefManager.getToken()).set(modelFA).addOnSuccessListener { documents ->
             result.value =true
         }.addOnFailureListener {
             result.value = false
         }
         return result
     }
-
-//////////////////////////////////////////////////////////////////////////////////
-    fun updateFAFirstName(id: String, firstName: String ): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "firstName" to firstName,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-
-    fun updateFALastName(id: String,lastName: String ): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "lastName" to lastName,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-    fun updateFADesignation(id: String,designation: String): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "designantion" to designation,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-    fun updateFACNIC(id: String, cnic: String ): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "cnic" to cnic,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-    fun updateFAPassword(id: String,password: String): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "password" to password
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-    fun updateFAAddress(id: String,address : String): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "address" to address,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-    fun updateFAPhone(id: String,phone : String): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        val faUpdate = mapOf(
-            "phone" to phone,
-        )
-        FACollection.document(id).update(faUpdate)
-            .addOnSuccessListener {
-                result.value = true
-            }.addOnFailureListener {
-                result.value = false
-            }
-
-        return result
-    }
-
-
 
 
 }

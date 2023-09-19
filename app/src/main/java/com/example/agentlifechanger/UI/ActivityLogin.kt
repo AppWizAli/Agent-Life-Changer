@@ -94,10 +94,15 @@ class ActivityLogin : AppCompatActivity() {
     private fun loginUser(user:ModelFA?,pin:String,token: String){
 
         //pending, active, incomplete
-
         if (user != null) {
+
+
             if(user.pin.equals(pin)){
+
+
                 if(user.status.equals(constants.INVESTOR_STATUS_ACTIVE)||user.status.equals(constants.INVESTOR_STATUS_PENDING)){
+                    Toast.makeText(mContext, "Active pending", Toast.LENGTH_SHORT).show()
+
                     utils.startLoadingAnimation()
                     lifecycleScope.launch {
                         db.collection(constants.FA_COLLECTION).document().get()
@@ -142,12 +147,10 @@ class ActivityLogin : AppCompatActivity() {
 
 
             }
-
+else Toast.makeText(mContext, "Incorrect Password", Toast.LENGTH_SHORT).show()
 
         }
-        else {
-            Toast.makeText(mContext, "Incorrect Pin", Toast.LENGTH_SHORT).show()
-        }
+
     }
 
 
@@ -168,6 +171,8 @@ class ActivityLogin : AppCompatActivity() {
                                 user = document.toObject(ModelFA::class.java)
                                 token= document.id
                             }
+
+
                             if(user?.status.equals(constants.INVESTOR_STATUS_ACTIVE) || user?.status.equals(constants.INVESTOR_STATUS_PENDING) || user?.status.equals(constants.INVESTOR_STATUS_INCOMPLETE) )
                                 showDialogPin(user,token)
                             else if(user?.status.equals(constants.INVESTOR_STATUS_BLOCKED))

@@ -16,10 +16,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Data.Repo
+import com.example.agentlifechanger.Models.FAViewModel
 import com.example.agentlifechanger.Models.ModelFA
 import com.example.agentlifechanger.Models.User
 import com.example.agentlifechanger.R
@@ -37,6 +39,9 @@ class ActivityEditProfile : AppCompatActivity() {
     private lateinit var mContext: Context
     private lateinit var sharedPrefManager: SharedPrefManagar
     private lateinit var utils: Utils
+    private val faViewModel: FAViewModel by viewModels()
+
+
     private var constants = Constants()
     private var photo = ""
     private lateinit var binding: ActivityEditProfileBinding
@@ -48,9 +53,7 @@ class ActivityEditProfile : AppCompatActivity() {
 
     private lateinit var repo: Repo
 
-
-
-
+    private lateinit var modelFA: ModelFA
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,165 +64,61 @@ class ActivityEditProfile : AppCompatActivity() {
         utils = Utils(mContext)
         sharedPrefManager = SharedPrefManagar(mContext)
 
-        repo =Repo(mContext)
-
+        repo = Repo(mContext)
+        modelFA = ModelFA()
         getFAID()
 
-        binding.editPIC.setOnClickListener{
-            showPhotoDialog()
-        }
+        edit()
 
         binding.btnProfileedit.setOnClickListener {
             update()
-            /*val intent = Intent(this@ActivityEditProfile, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)*/
+            val intent = Intent(this@ActivityEditProfile, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+
         }
-//toas
+        binding.editPIC.setOnClickListener {
+            showPhotoDialog()
+        }
     }
 
-    private fun update(){
+    fun update() {
+        var fa = sharedPrefManager.getUser()
 
-        val editedFirstName = binding.etFirstName.editText?.text.toString()
-        val editedLastName = binding.etLastName.editText?.text.toString()
-        val editedDesignation = binding.etDesignation.editText?.text.toString()
-        val editedCNIC = binding.etCNIC.editText?.text.toString()
-        val editedpassword = binding.etpassword.editText?.text.toString()
-        val editedaddress = binding.etAddress.editText?.text.toString()
-        val editedPhone = binding.etPhone.editText?.text.toString()
-
-        if (TextUtils.isEmpty(editedFirstName)){
+        fa.firstName = binding.etFirstName.editText?.text.toString()
+        fa.lastName = binding.etLastName.editText?.text.toString()
+        fa.designantion = binding.etDesignation.editText?.text.toString()
+        fa.cnic = binding.etCNIC.editText?.text.toString()
+        fa.address = binding.etAddress.editText?.text.toString()
+        fa.phone = binding.etPhone.editText?.text.toString()
+        lifecycleScope.launch {
+            faViewModel.updateFA(fa)
         }
-        else if (!TextUtils.isEmpty(editedFirstName)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFAFirstName(
-                    sharedPrefManager.getToken(),
-                    editedFirstName,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-
-        }
-
-        if (TextUtils.isEmpty(editedLastName)){}
-        else if(!TextUtils.isEmpty(editedLastName)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFALastName(
-                    sharedPrefManager.getToken(),
-                    editedLastName,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-
-        if (TextUtils.isEmpty(editedDesignation)){}
-        else if(!TextUtils.isEmpty(editedDesignation)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFADesignation(
-                    sharedPrefManager.getToken(),
-                    editedDesignation,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-
-        if (TextUtils.isEmpty(editedCNIC)){}
-        else if(!TextUtils.isEmpty(editedCNIC)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFACNIC(
-                    sharedPrefManager.getToken(),
-                    editedCNIC,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-
-        if (TextUtils.isEmpty(editedpassword)){}
-        else if(!TextUtils.isEmpty(editedpassword)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFAPassword(
-                    sharedPrefManager.getToken(),
-                    editedpassword,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-
-        if (TextUtils.isEmpty(editedaddress)){}
-        else if(!TextUtils.isEmpty(editedaddress)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFAAddress(
-                    sharedPrefManager.getToken(),
-                    editedaddress,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-
-        if (TextUtils.isEmpty(editedPhone)){}
-        else if (!TextUtils.isEmpty(editedPhone)){
-            lifecycleScope.launch {
-                val isSuccessLiveData = repo.updateFAPhone(
-                    sharedPrefManager.getToken(),
-                    editedPhone,
-                )
-                isSuccessLiveData.observe(this@ActivityEditProfile) { isSuccess ->
-                    if (isSuccess) {
-                        Toast.makeText(this@ActivityEditProfile,constants.UPDATE_SUCCESSFULLY, Toast.LENGTH_SHORT).show()
-
-                    } else {
-                        Toast.makeText(this@ActivityEditProfile, "Failed to update FA details", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            }
-
-
+        sharedPrefManager.saveUser(fa)
     }
+
+
+    fun edit() {
+        val model = sharedPrefManager.getUser()
+        if (model != null) {
+            Glide.with(mContext)
+                .load(model.photo)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(binding.imgView)
+            binding.etFirstName.editText?.setText(model.firstName)
+            binding.etLastName.editText?.setText(model.lastName)
+            binding.etDesignation.editText?.setText(model.designantion)
+            binding.etCNIC.editText?.setText(model.cnic)
+            binding.etAddress.editText?.setText(model.address)
+            binding.etPhone.editText?.setText(model.phone)
+        }
+    }
+
 
     private fun getFAID() {
-        db.collection(constants.FA_COLLECTION).whereEqualTo(FieldPath.documentId(),sharedPrefManager.getToken())
+        db.collection(constants.FA_COLLECTION)
+            .whereEqualTo(FieldPath.documentId(), sharedPrefManager.getToken())
             .addSnapshotListener { snapshot, e ->
                 if (snapshot != null) {
                     utils.startLoadingAnimation()
@@ -228,7 +127,7 @@ class ActivityEditProfile : AppCompatActivity() {
                         Glide.with(mContext)
                             .load(photo)
                             .centerCrop()
-                            .placeholder(R.drawable.ic_launcher_background) // Placeholder image while loading
+                            .placeholder(R.drawable.ic_launcher_background)
                             .into(binding.imgView)
                         utils.endLoadingAnimation()
                     }
@@ -255,7 +154,7 @@ class ActivityEditProfile : AppCompatActivity() {
         btnUplodProfile.setOnClickListener {
 
             lifecycleScope.launch {
-                if (imageURI != null) addUserPhoto(imageURI!!, "AdvisorProfilePhoto")
+                if (imageURI != null) addFaPhoto(imageURI!!, "AdvisorProfilePhoto")
                 else Toast.makeText(mContext, "Please Select Image", Toast.LENGTH_SHORT).show()
             }
 
@@ -267,64 +166,42 @@ class ActivityEditProfile : AppCompatActivity() {
 
 
     private var resultLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()){
+        ActivityResultContracts.GetContent()
+    ) {
         imageURI = it
         imgProfilePhoto.setImageURI(imageURI)
 
     }
 
 
-    fun addUserPhoto(imageUri: Uri, type: String) {
-
-        /* utils.startLoadingAnimation()
-         userViewModel.uploadPhotoRefrence(imageUri,type)
-             .downloadUrl.addOnSuccessListener {uri ->
-                 var user:User=sharedPrefManager.getUser()
-                 user.photo= uri.toString()
-                 lifecycleScope.launch {
-
-                     userViewModel.updateUser(user).observe(this@ActivityUserDetails) {
-                         utils.endLoadingAnimation()
-                         if (it == true) {
-                             sharedPrefManager.saveUser(user)
-                             sharedPrefManager.putUserPhoto(true)
-                             Toast.makeText(mContext, "Profile Photo Updated", Toast.LENGTH_SHORT).show()
-                             dialog.dismiss()
-                             checkData()
-                         }
-                         else Toast.makeText(mContext, constants.SOMETHING_WENT_WRONG_MESSAGE, Toast.LENGTH_SHORT).show()
-
-                     }
-                 }
-         }*/
+    suspend fun addFaPhoto(imageUri: Uri, type: String) {
         utils.startLoadingAnimation()
-        repo.uploadPhoto(imageUri, type)
+        faViewModel.uploadPhoto(imageUri, type)
             .addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                    var modelFA: ModelFA = sharedPrefManager.getUser()
-                    modelFA.photo = uri.toString()
+                    var modelFa: ModelFA = sharedPrefManager.getUser()
+                    modelFa.photo = uri.toString()
 
-                        repo.updateUserPhoto(modelFA)
+                    lifecycleScope.launch {
 
-                    if(repo.updateUserPhoto(modelFA).equals(false)){
-                        utils.endLoadingAnimation()
-                        Toast.makeText(mContext,
-                            constants.SOMETHING_WENT_WRONG_MESSAGE,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        faViewModel.updateFA(modelFa).observe(this@ActivityEditProfile) {
+                            utils.endLoadingAnimation()
+                            if (it == true) {
+                                sharedPrefManager.saveUser(modelFa)
+                                Toast.makeText(
+                                    mContext,
+                                    "Profile Photo Updated",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else Toast.makeText(
+                                mContext,
+                                constants.SOMETHING_WENT_WRONG_MESSAGE,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                        }
                     }
-                    else{
-                        utils.endLoadingAnimation()
-                        sharedPrefManager.saveUser(modelFA)
-                        utils.endLoadingAnimation()
-                        Toast.makeText(
-                            mContext,
-                            "Profile Photo Updated",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        dialog.dismiss()
 
-                    }
                 }
                     .addOnFailureListener { exception ->
                         Toast.makeText(mContext, exception.message + "", Toast.LENGTH_SHORT).show()
@@ -337,10 +214,14 @@ class ActivityEditProfile : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+        startActivity(
+            Intent(
+                mContext,
+                MainActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
 
     }
-
 
 
 }
