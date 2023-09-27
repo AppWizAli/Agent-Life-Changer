@@ -99,7 +99,9 @@ class AdapterClient (var activity: String, val userlist: List<User>, val listene
             itemBinding.btnRemove.setOnClickListener {
                 listener.onRemoveClick(user)
             }*/
-            itemBinding.layUser.setOnClickListener { listener.onItemClick(user) }
+            itemBinding.layUser.setOnClickListener {
+
+                listener.onItemClick(user) }
 
 
         }

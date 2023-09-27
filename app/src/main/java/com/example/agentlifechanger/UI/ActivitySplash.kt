@@ -6,8 +6,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.agentlifechanger.Constants
+import com.example.agentlifechanger.Models.FAViewModel
+import com.example.agentlifechanger.Models.FaProfitModel
+import com.example.agentlifechanger.Models.ModelBankAccount
+import com.example.agentlifechanger.Models.TransactionModel
 import com.example.agentlifechanger.Models.User
 import com.example.agentlifechanger.R
 import com.example.agentlifechanger.SharedPrefManagar
@@ -19,7 +24,7 @@ import java.util.Timer
 import kotlin.concurrent.schedule
 
 class ActivitySplash : AppCompatActivity() {
-
+    private val faViewModel: FAViewModel by viewModels()
     private lateinit var utils: Utils
     private lateinit var mContext: Context
     private lateinit var constants: Constants
@@ -40,18 +45,33 @@ class ActivitySplash : AppCompatActivity() {
         constants = Constants()
 
         getUser()
-
+getData()
         Timer().schedule(1500) {
-            if (sharedPrefManager.isLoggedIn() == true) {
-                startActivity(Intent(mContext, MainActivity::class.java))
+
+
+
+            if(sharedPrefManager.isLoggedIn()==true)
+            {
+
+                startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
                 finish()
-            } else if (sharedPrefManager.isLoggedIn() == false) {
-                startActivity(Intent(mContext, ActivityLogin::class.java))
-                finish()
-            } else if (sharedPrefManager.logOut().equals(false)) {
-                startActivity(Intent(mContext, ActivityLogin::class.java))
+
+            }
+
+            else if(sharedPrefManager.isStatus()=="pending")
+            {
+
+
+                startActivity(Intent(mContext,ActivityInvestorLoginDeatils::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                )
                 finish()
             }
+            if(!(sharedPrefManager.isStatus()=="pending") ) {
+                startActivity(Intent(mContext,ActivityLogin::class.java))
+                finish()
+            }
+            finish()
         }
 
 
@@ -92,5 +112,55 @@ class ActivitySplash : AppCompatActivity() {
     suspend fun getUsers(): Task<QuerySnapshot> {
         return InvestorsCollection.get()
     }*/
+
+
+
+
+    fun getData(){
+        lifecycleScope.launch{
+            faViewModel.getAccounts()
+                .addOnCompleteListener{task ->
+                    utils.endLoadingAnimation()
+                    if (task.isSuccessful) {
+                        val listFaAccounts = ArrayList<ModelBankAccount>()
+                        val listAdminAccounts = ArrayList<ModelBankAccount>()
+                        if(task.result.size()>0){
+                            for (document in task.result) {
+                                if(document.toObject(ModelBankAccount::class.java).account_holder.equals(sharedPrefManager.getToken()))
+                                    listFaAccounts.add( document.toObject(ModelBankAccount::class.java))
+                            }
+                            sharedPrefManager.putFaBankList(listFaAccounts)
+                            sharedPrefManager.putAdminBankList(listAdminAccounts)
+
+                        }
+                    }
+                    else Toast.makeText(mContext, constants.SOMETHING_WENT_WRONG_MESSAGE, Toast.LENGTH_SHORT).show()
+
+                }
+                .addOnFailureListener{
+                    utils.endLoadingAnimation()
+                    Toast.makeText(mContext, it.message+"", Toast.LENGTH_SHORT).show()
+
+                }
+
+
+        }
+        var faProfitModel=FaProfitModel()
+        lifecycleScope.launch {
+            faViewModel.getAgentProfit().addOnCompleteListener { task->
+                if(task.isSuccessful)
+                {
+                    if (task.result.size()>0)
+                    {
+                        for (document in task.result) {
+                            if(document.toObject(FaProfitModel::class.java).fa_id == sharedPrefManager.getToken())
+                             faProfitModel=document.toObject(FaProfitModel::class.java)
+                        }
+                        sharedPrefManager.putFaProfit( faProfitModel)
+                    }
+                }
+            }
+        }
+    }
 
     }

@@ -2,19 +2,20 @@ package com.example.agentlifechanger.Models
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.agentlifechanger.Adapters.TransactionsAdapter
 import com.example.agentlifechanger.Constants
 import com.example.agentlifechanger.Data.Repo
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.mlkit.common.sdkinternal.SharedPrefManager
+import com.example.agentlifechanger.SharedPrefManagar
+
 
 class InvesterViewModel(context: Application) : AndroidViewModel(context) {
 
     private val userRepo = Repo(context)
-    private val sharedPrefManager = SharedPrefManager(context)
+    private val sharedPrefManager= SharedPrefManagar(context)
 
     private var constants= Constants()
-
 
 
     suspend fun getInvestors():Task<QuerySnapshot>
@@ -25,4 +26,15 @@ class InvesterViewModel(context: Application) : AndroidViewModel(context) {
     {
         return  userRepo.getInvestement()
     }
+
+
+    fun getApprovedInvestmentReqAdapter(): TransactionsAdapter {
+        return TransactionsAdapter(sharedPrefManager.getInvestmentReqList().filter{ it.status.equals(constants.TRANSACTION_STATUS_APPROVED) }.sortedByDescending { it.createdAt })
+
+    }
+    suspend fun getInvestmentReq(token: String): Task<QuerySnapshot> {
+        return userRepo.getTransactionReq(token)
+    }
+
+
 }

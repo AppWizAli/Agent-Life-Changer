@@ -99,36 +99,23 @@ class ActivityLogin : AppCompatActivity() {
 
             if(user.pin.equals(pin)){
 
-
-                if(user.status.equals(constants.INVESTOR_STATUS_ACTIVE)||user.status.equals(constants.INVESTOR_STATUS_PENDING)){
-                    Toast.makeText(mContext, "Active pending", Toast.LENGTH_SHORT).show()
-
                     utils.startLoadingAnimation()
                     lifecycleScope.launch {
                         db.collection(constants.FA_COLLECTION).document().get()
                             .addOnSuccessListener {
                                 utils.endLoadingAnimation()
-                                val nominee: ModelFA? = it.toObject(ModelFA::class.java)
-                                if (nominee != null) {
-                                    if(user!=null)sharedPrefManager.saveLoginAuth(user, token, true)//usre +token+login_boolean
-                                    if (nominee!=null) sharedPrefManager.saveUser(nominee)
-                                    //////// here -> nominee saved(if available), user saved , loginInfo saved //////
-                                    lifecycleScope.launch {
-
-                                        // Now you can start MainActivity
+                                    sharedPrefManager.setStatus("pending")
+                                    sharedPrefManager.saveLoginAuth(user, token, false)//usre +token+login_boolean
+                                    sharedPrefManager.saveUser(user)
                                         startActivity(
                                             Intent(
                                                 mContext,
-                                                MainActivity::class.java
+                                                ActivityInvestorLoginDeatils::class.java
                                             ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                                         )
                                         finish()
-                                        // Inside your ActivityLogin class
-                                        /*val intent = Intent(this@ActivityLogin, MainActivity::class.java)
-                                        intent.putExtra("FA", modelFa.toString()) // Replace "key" with your desired key and "value" with the actual value
-                                        startActivity(intent)*/
-                                    }
-                                }
+
+
                             }
                             .addOnFailureListener{
                                 utils.endLoadingAnimation()
@@ -139,14 +126,7 @@ class ActivityLogin : AppCompatActivity() {
                     }
 
                 }
-                else{
-                    if(user!=null)sharedPrefManager.saveLoginAuth(user, token, true)//usre +token+login_boolean
-                    startActivity(Intent(mContext,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
-                    finish()
-                }
 
-
-            }
 else Toast.makeText(mContext, "Incorrect Password", Toast.LENGTH_SHORT).show()
 
         }

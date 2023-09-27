@@ -3,8 +3,8 @@ package com.example.agentlifechanger.Models
 import com.google.firebase.Timestamp
 
 
-data class FaProfitModel @JvmOverloads constructor(
-    var fa_id: String = "",
+data class TransactionModel @JvmOverloads constructor(
+    var investorID: String = "",
     var type: String = "", //invest, withdraw
     var status: String = "", // pending ,approved , reject
     var amount: String = "",
@@ -13,7 +13,7 @@ data class FaProfitModel @JvmOverloads constructor(
     var senderAccountID: String = "",// account id
     var id: String = "",
     var newBalance: String = "", //
-    var remarks: String = "", //
     var transactionAt: Timestamp? = null, // Creation timestamp
-    val createdAt: Timestamp ?=null // Creation timestamp
+    val createdAt: Timestamp = Timestamp.now() // Creation timestamp
+
 )

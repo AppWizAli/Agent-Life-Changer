@@ -6,13 +6,15 @@ public class Constants  {
 
     ///////////////////////////// COLLECTIONS NAME //////////////////////////
     public var FA_COLLECTION="Financial Advisor"
+    public var FA_ACCOUNT_COLLECTION="Agent Account"
 
     public var INVESTOR_COLLECTION="Investors"
     public var NOMINEE_COLLECTION="Nominees"
     public var ACCOUNTS_COLLECTION="Accounts"
     public var INVESTMENT_COLLECTION="Investment"
     public var ANNOUNCEMENT_COLLECTION="Admin Announcement"
-    public var TRANSACTION_COLLECTION="Transactions"
+    public var PROFIT_COLLECTION="Agent Profit"
+    public var TRANSACTION_REQ_COLLECTION="Transactions"
     public var PROFIT_TAX_COLLECTION="ProfitTax"
     public var WITHDRAW_COLLECTION="Withdraw"
     public var NOTIFICATION_COLLECTION="Notification"
@@ -102,7 +104,7 @@ public class Constants  {
     public var FROM_PENDING_INVESTMENT_REQ= "FragmentPendingInvestmentReq"
     public var FROM_PENDING_INVESTOR_REQ= "ActivityPendingInvestorReq"
     public var FROM_APPROVED_WITHDRAW_REQ= "FragmentApprovedWithdrawReq"
-    public var FROM_APPROVED_INVESTMENT_REQ= "FragmentApprovedInvestmentReq"
+    public var APPROVED_INVESTMENT= "Approved"
 
 
 
