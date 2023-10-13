@@ -131,6 +131,35 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:62412168385:android:0ad8f488b7b04a2c3e4840",
+        "android_client_info": {
+          "package_name": "com.enfotrix.agentlifechanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62412168385-1acqn8ftedenabcq414naui4tlrtidua.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5FJL1Ce63V3CZ0XCMJMidDlwvC69MA8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62412168385-1acqn8ftedenabcq414naui4tlrtidua.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:62412168385:android:1696fbf47a6c2f463e4840",
         "android_client_info": {
           "package_name": "com.enfotrix.agentpanel"
@@ -203,35 +232,6 @@
             "certificate_hash": "c1eea82b1323286eab6d76252ea2d804322b2742"
           }
         },
-        {
-          "client_id": "62412168385-1acqn8ftedenabcq414naui4tlrtidua.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB5FJL1Ce63V3CZ0XCMJMidDlwvC69MA8E"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "62412168385-1acqn8ftedenabcq414naui4tlrtidua.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:62412168385:android:044768ff0342e53d3e4840",
-        "android_client_info": {
-          "package_name": "com.example.agentlifechanger"
-        }
-      },
-      "oauth_client": [
         {
           "client_id": "62412168385-1acqn8ftedenabcq414naui4tlrtidua.apps.googleusercontent.com",
           "client_type": 3

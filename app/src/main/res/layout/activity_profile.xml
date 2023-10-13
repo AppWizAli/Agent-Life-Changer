@@ -50,7 +50,7 @@
                         android:id="@+id/tvUserName"
                         android:layout_width="160dp"
                         android:layout_height="wrap_content"
-                        android:text="Hassan Raza"
+                        android:text=""
 
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
@@ -64,7 +64,7 @@
                         android:id="@+id/tvCNIC"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="38403-3093530-7"
+                        android:text=""
                         android:layout_marginBottom="10dp"
                         android:layout_below="@+id/tvUserName"
                         android:layout_alignParentLeft="true"
@@ -107,7 +107,7 @@
                             android:id="@+id/tvAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="House # 64 , Nawab City , Islamabad Road Sargodha"
+                            android:text=""
                             android:textColor="@color/SecondaryVariant"
                             android:textStyle="bold" />
 
@@ -163,7 +163,7 @@
                     android:id="@+id/tvPhoneNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+92 306 0112316"
+                    android:text=""
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
                     android:layout_below="@+id/tvHeader3"
@@ -216,12 +216,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Investor can edit or add bank accounts."
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_below="@+id/tvHeader4"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Investor can edit or add bank accounts."
                     android:textColor="@color/SecondaryVariant"
                     android:textSize="15sp"
                     android:textStyle="bold" />

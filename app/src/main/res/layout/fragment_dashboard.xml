@@ -133,7 +133,7 @@
 
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:orientation="vertical"
@@ -161,6 +161,17 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
+
+                    <TextView
+                        android:id="@+id/editfa"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Edit"
+                        android:textStyle="bold"
+                        android:gravity="end"
+                        android:layout_marginTop="60dp"
+                        android:padding="10dp"
+                        android:textColor="@color/primary"/>
                 </LinearLayout>
 
 
@@ -181,25 +192,26 @@
 
 
             <RelativeLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:id="@+id/WithDraw"
+                android:id="@+id/Income"
                 >
 
 
                 <TextView
-                    android:id="@+id/tvsalaryRemarks"
+                    android:id="@+id/tvsalaryDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
+                    android:layout_centerInParent="true"
+
                     android:layout_marginTop="10dp"
 
+                    android:text="Income Details"
                     android:textColor="@color/primary"
-
-                    android:textStyle="bold"
-
                     android:textSize="14dp"
-                android:layout_centerInParent="true"
-                    android:text="Income Remarks"/>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -216,6 +228,59 @@
 
 
             </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="5dp"
+            android:layout_marginTop="10dp"
+            app:cardBackgroundColor="@color/secondary_m"
+            android:layout_marginBottom="10dp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_below="@+id/v1">
+
+
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:id="@+id/withdraw"
+                >
+
+
+                <TextView
+                    android:id="@+id/tvWithdrawDeatils"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerInParent="true"
+
+                    android:layout_marginTop="10dp"
+
+                    android:text="Withdraw Details"
+                    android:textColor="@color/primary"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/baseline_keyboard_arrow_right_24"
+                    android:tint="@color/primary" />
+
+
+
+            </RelativeLayout>
+
 
         </androidx.cardview.widget.CardView>
 
@@ -243,6 +308,7 @@
 
 
             <LinearLayout
+                android:id="@+id/layAboutUs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -293,6 +359,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/layServices"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -319,6 +386,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/laycompay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="3"
@@ -342,6 +410,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/layFeeback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -366,6 +435,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/layshare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -390,6 +460,7 @@
 
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/layInvest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -405,11 +476,12 @@
                     android:layout_height="40dp"
                     android:tint="@color/primary"
                     android:src="@drawable/investment_planss"/>
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="71dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/primary"
-                    android:text="Invest Plans"/>
+                    android:text="Invest Plans"
+                    android:textColor="@color/primary" />
 
 
             </LinearLayout>

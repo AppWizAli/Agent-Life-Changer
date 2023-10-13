@@ -5,9 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary"
+    android:background="#EDE8F4"
     tools:context=".UI.ActivitySplash">
-
+<!--
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="90dp"
+        android:text="Bank of the Future"
+        android:textSize="19sp" />-->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,28 +23,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/logo" />
-
-
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="7dp"
-            android:text="Bank of the future"
-            android:layout_gravity="center_horizontal"
-            android:textColor="#CFCECE"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            />
+            android:src="@drawable/logo2"
+     />
 
     </LinearLayout>
-
+<!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,8 +41,13 @@
         android:layout_marginBottom="40dp"
         android:gravity="center_horizontal"
         android:text="www.lifechangerpk.com"
-        android:textColor="@color/statusbarcolor"
-        android:textStyle="bold" />
-
-
+        android:textColor="@color/black"
+        android:textStyle="bold" />-->
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="240dp"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="Image background"
+   android:layout_marginBottom="-50dp"
+        android:src="@drawable/splashh" />
 </RelativeLayout>

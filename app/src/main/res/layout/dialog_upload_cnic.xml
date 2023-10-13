@@ -33,7 +33,7 @@
                 android:id="@+id/tvHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Investor CNIC Photo !"
+                android:text="Financial Advisor CNIC Photo !"
                 android:textColor="@color/black_m"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/SecondaryVariant"
                 android:layout_marginHorizontal="20dp"
-                android:text="Upload both (Front and Back) side photo of your CNIC" />
+                android:text="Upload both (Front and Back) side of your CNIC" />
 
 
             <LinearLayout

@@ -17,7 +17,7 @@
             android:layout_marginHorizontal="15dp"
             android:textStyle="bold"
             android:layout_marginTop="15dp"
-            android:text="User Details."/>
+            android:text="Financial Advisor Details."/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -229,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upload your profile photo for clear identity"
+                        android:text="Upload your photo for clear identity"
                         android:textSize="12dp"
                         android:layout_marginTop="2dp"
                         android:textColor="#7C7B7B" />
@@ -305,7 +305,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upload both side photo of your CNIC"
+                        android:text="Upload both sides of your CNIC"
                         android:textSize="12dp"
                         android:layout_marginTop="2dp"
                         android:textColor="#7C7B7B" />

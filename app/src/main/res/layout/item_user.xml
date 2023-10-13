@@ -50,7 +50,7 @@
                         android:id="@+id/tvInvestorName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mr. Ramzan"
+                        android:text=""
 
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
@@ -65,7 +65,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="S/D/O"
+                            android:text=""
                             android:textSize="10dp"
                             android:layout_alignParentTop="true"
                             android:layout_alignParentLeft="true"
@@ -88,7 +88,7 @@
                         android:id="@+id/tvCNIC"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="68585456454551"
+                        android:text=""
                         android:layout_below="@+id/tvUserName"
                         android:layout_alignParentLeft="true"
                         android:textColor="@color/SecondaryVariant"
@@ -128,7 +128,14 @@
                 android:text="Remove" />
 -->
 
-
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/tvinvestment"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true"
+    android:padding="15dp"
+    android:text=""/>
         </RelativeLayout>
 
 
