@@ -323,14 +323,6 @@ class ActivityInvestorLoginDeatils : AppCompatActivity() {
 
 
                 if (FACnicFrontURI != null && FACnicBackURI != null) {
-                    Toast.makeText(mContext, "clicked", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(
-                        mContext,
-                        FACnicFront.toString() + "",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Toast.makeText(mContext, FACnicBack.toString() + "", Toast.LENGTH_SHORT)
-                        .show()
                     lifecycleScope.launch {
                         addUserCNIC(FACnicFrontURI!!, FACnicBackURI!!, type)
                     }
