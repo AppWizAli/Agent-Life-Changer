@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace 'com.enfotrix.agentlifechanger'
+    namespace 'com.enfotrix.falifechanger'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.enfotrix.agentlifechanger"
+        applicationId "com.enfotrix.falifechanger"
         minSdk 22
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,7 +69,7 @@ dependencies {
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
@@ -129,5 +129,5 @@ dependencies {
     //to download pdf file
 
     implementation 'com.itextpdf:itext7-core:7.1.16'
-
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
 }

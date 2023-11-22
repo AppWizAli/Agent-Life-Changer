@@ -12,6 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AgentLifeChanger"
         tools:targetApi="31">
+
+
+
+        <service android:name=".api.NotificationService"
+            android:exported="false"
+            android:permission="com.google.android.c2dn.permission.Send">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.android.c2dn.intent.Reciever"/>
+            </intent-filter>
+        </service>
+
+
+
         <activity
             android:name=".test"
             android:exported="false" />
