@@ -16,6 +16,11 @@
         android:name="com.enfotrix.falifechanger.Fragments.FragmentDashboard"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/navigation_Profile"
+        android:name="com.enfotrix.falifechanger.Fragments.FragmentProfile"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
 
 
 </navigation>

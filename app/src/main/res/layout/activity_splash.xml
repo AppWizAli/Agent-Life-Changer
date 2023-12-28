@@ -5,17 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDE8F4"
+    android:background="@drawable/splash"
+
     tools:context=".UI.ActivitySplash">
-<!--
-    <TextView
+<!--    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_marginTop="90dp"
         android:text="Bank of the Future"
-        android:textSize="19sp" />-->
+        android:textSize="19sp" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
      />
 
     </LinearLayout>
-<!--
+&lt;!&ndash;
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,12 +42,12 @@
         android:gravity="center_horizontal"
         android:text="www.lifechangerpk.com"
         android:textColor="@color/black"
-        android:textStyle="bold" />-->
+        android:textStyle="bold" />&ndash;&gt;
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="240dp"
         android:layout_alignParentBottom="true"
         android:contentDescription="Image background"
    android:layout_marginBottom="-50dp"
-        android:src="@drawable/splashh" />
+        android:src="@drawable/splashh" />-->
 </RelativeLayout>

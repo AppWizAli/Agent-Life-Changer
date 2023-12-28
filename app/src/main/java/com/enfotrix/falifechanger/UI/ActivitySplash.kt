@@ -36,6 +36,7 @@ class ActivitySplash : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_splash)
         mContext = this@ActivitySplash;
         sharedPrefManager = SharedPrefManagar(mContext)
